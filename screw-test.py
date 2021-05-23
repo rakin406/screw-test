@@ -7,6 +7,8 @@ Example: ./screw-test.py question-paper.png
 
 import sys
 from pdfminer.high_level import extract_text
+import requests
+from bs4 import BeautifulSoup
 
 try:
     from PIL import Image
@@ -18,8 +20,16 @@ import pytesseract
 if len(sys.argv) > 1:
     QUESTION = sys.argv[1]
 else:
-    print("Provide question paper image or pdf, you lowlife cheater!")
+    print("Usage: ./screw-test.py <image/pdf>")
+    print("Example: ./screw-test.py question-paper.png")
     sys.exit(1)
+
+# All question paper links. These are the sites I know so far.
+URLS = [
+    "https://github.com/trending?since=daily",
+    "https://github.com/trending?since=weekly",
+    "https://github.com/trending?since=monthly",
+]
 
 if QUESTION.endswith(".pdf"):
     print(extract_text(QUESTION))
