@@ -59,9 +59,14 @@ def find_question_url(question: str) -> str:
     search_url = "https://duckduckgo.com/?q=physicsandmathstutor+"
 
     # Search query
-    for word in question.split():
+    words = question.split()
+    for word in words:
         search_url += word
-        search_url += "+"
+        if word == words[-1]:
+            # I don't know if this is needed.
+            search_url += "&t=hc&va=u&ia=web"
+        else:
+            search_url += "+"
 
     page = requests.get(search_url)
     soup = BeautifulSoup(page.content, "lxml")
