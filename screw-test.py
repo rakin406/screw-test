@@ -26,9 +26,6 @@ else:
     print("Example: ./screw-test.py question-paper.png")
     sys.exit(1)
 
-print("Opening browser...")
-driver = webdriver.Firefox()
-
 
 # NOTE: This function is not perfect, it returns some non-questions too. It's
 # not necessary to fix it but the program will become slightly more efficient
@@ -84,7 +81,7 @@ def find_question_urls(driver, question: str) -> str:
     try:
         # Get all website links
         question_urls = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "result__url js-result-extras-url"))
+                EC.presence_of_all_elements_located((By.CLASS_NAME, "result__url js-result-extras-url"))
                 )
         for url in question_urls:
             # Check if link contains the domain "pmt.physicsandmathstutor.com" and
@@ -107,6 +104,9 @@ else:
 
 print("Detecting questions...")
 questions = detect_questions(text)
+
+print("Opening browser...")
+driver = webdriver.Firefox()
 
 # Test
 for ques in questions:
