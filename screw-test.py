@@ -25,10 +25,8 @@ else:
     sys.exit(1)
 
 # All question paper links. These are the sites I know so far.
+# TODO: Add links
 URLS = [
-    "https://github.com/trending?since=daily",
-    "https://github.com/trending?since=weekly",
-    "https://github.com/trending?since=monthly",
 ]
 
 if QUESTION.endswith(".pdf"):
