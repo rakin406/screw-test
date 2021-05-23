@@ -7,8 +7,10 @@ Example: ./screw-test.py question-paper.png
 
 import sys
 from pdfminer.high_level import extract_text
-import requests
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 try:
     from PIL import Image
@@ -23,6 +25,9 @@ else:
     print("Usage: ./screw-test.py <image/pdf>")
     print("Example: ./screw-test.py question-paper.png")
     sys.exit(1)
+
+print("Opening browser...")
+driver = webdriver.Firefox()
 
 
 # NOTE: This function is not perfect, it returns some non-questions too. It's
@@ -67,25 +72,27 @@ def get_ddg_url(question: str) -> str:
     return url
 
 
-# TODO: Don't support JUST physicsandmathstutor but also many others.
-def find_question_urls(question: str) -> str:
+# TODO: Make this work, don't support JUST physicsandmathstutor but also many
+# others.
+def find_question_urls(driver, question: str) -> str:
     """
     Return URL of major mark scheme websites.
     """
     urls = []
-    page = requests.get(get_ddg_url(question))
-    soup = BeautifulSoup(page.content, "lxml")
+    driver.get(get_ddg_url(question))
 
-    # Get all website links
-    a_tags = soup.find_all("a")
-    for content in a_tags:
-        # Check if link contains the domain "pmt.physicsandmathstutor.com" and
-        # if it does, append the URL.
-        domain_url = content.find("span", class_="result__url__domain")
-        if domain_url.text == "https://pmt.physicsandmathstutor.com":
-            end_url = content.find("span", class_="result__url__full")
-            question_url = domain_url.text + end_url.text
-            urls.append(question_url)
+    try:
+        # Get all website links
+        question_urls = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "result__url js-result-extras-url"))
+                )
+        for url in question_urls:
+            # Check if link contains the domain "pmt.physicsandmathstutor.com" and
+            # if it does, append the URL.
+            if "https://pmt.physicsandmathstutor.com" in url.get_attribute("href"):
+                urls.append(url)
+    except:
+        pass
 
     return urls
 
@@ -103,6 +110,8 @@ questions = detect_questions(text)
 
 # Test
 for ques in questions:
-    urls = find_question_urls(ques)
+    urls = find_question_urls(driver, ques)
     for url in urls:
         print(url)
+
+driver.close()
