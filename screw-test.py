@@ -8,6 +8,7 @@ Example: ./screw-test.py question-paper.png
 import sys
 from pdfminer.high_level import extract_text
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 
 try:
     from PIL import Image
@@ -97,8 +98,11 @@ else:
 print("Detecting questions...")
 questions = detect_questions(text)
 
-print("Opening browser...")
-driver = webdriver.Firefox()
+options = Options()
+options.headless = True
+print("Searching questions...")
+driver = webdriver.Firefox(options=options)
+#  driver = webdriver.Firefox()
 
 # Test
 for ques in questions:
@@ -107,4 +111,4 @@ for ques in questions:
     for url in urls:
         print(url)
 
-driver.close()
+driver.quit()
