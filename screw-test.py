@@ -24,18 +24,13 @@ else:
     print("Example: ./screw-test.py question-paper.png")
     sys.exit(1)
 
-# All question paper links. These are the sites I know so far.
-# TODO: Add links
-URLS = [
-]
-
 
 # NOTE: This function is not perfect, it returns some non-questions too. It's
 # not necessary to fix it but the program will become slightly more efficient
 # and accurate if I do so.
-def get_questions(paper: str) -> str:
+def detect_questions(paper: str) -> str:
     """
-    Return all the questions from the paper
+    Return all the detected questions from the paper
     """
     questions = []
     for line in paper.splitlines():
@@ -51,9 +46,53 @@ def get_questions(paper: str) -> str:
     return questions
 
 
+# TODO: Don't support JUST physicsandmathstutor but also many others.
+def find_question_url(question: str) -> str:
+    """
+    Return URL of major mark scheme websites.
+    """
+    urls = []
+
+    # Create duckduckgo-searchable URL. The reason I chose duckduckgo instead
+    # of google is because scraping google is harder(they do not show the full
+    # URL of the links).
+    search_url = "https://duckduckgo.com/?q=physicsandmathstutor+"
+
+    # Search query
+    for word in question.split():
+        search_url += word
+        search_url += "+"
+
+    page = requests.get(search_url)
+    soup = BeautifulSoup(page.content, "lxml")
+
+    # Get all website links
+    sites = soup.find_all("a")
+    for link in sites:
+        # Check if link contains the domain "pmt.physicsandmathstutor.com" and
+        # if it does, append the URL.
+        domain_url = link.find("span", class_="result__url__domain")
+        if domain_url.text == "https://pmt.physicsandmathstutor.com":
+            end_url = link.find("span", class_="result__url__full")
+            question_link = domain_url.text + end_url.text
+            urls.append(question_link)
+
+    return urls
+
+
 if QUESTION_PAPER.endswith(".pdf"):
     pdf_text = extract_text(QUESTION_PAPER)
-    questions = get_questions(pdf_text)
+    questions = detect_questions(pdf_text)
+
+    # Test
+    for ques in questions:
+        urls = find_question_url(ques)
+        for url in urls:
+            print(url)
 else:
     image_text = pytesseract.image_to_string(Image.open(QUESTION_PAPER))
-    questions = get_questions(image_text)
+    questions = detect_questions(image_text)
+    for ques in questions:
+        urls = find_question_url(ques)
+        for url in urls:
+            print(url)
