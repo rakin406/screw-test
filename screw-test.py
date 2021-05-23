@@ -67,15 +67,15 @@ def find_question_url(question: str) -> str:
     soup = BeautifulSoup(page.content, "lxml")
 
     # Get all website links
-    sites = soup.find_all("a")
-    for link in sites:
+    a_tags = soup.find_all("a")
+    for content in a_tags:
         # Check if link contains the domain "pmt.physicsandmathstutor.com" and
         # if it does, append the URL.
-        domain_url = link.find("span", class_="result__url__domain")
+        domain_url = content.find("span", class_="result__url__domain")
         if domain_url.text == "https://pmt.physicsandmathstutor.com":
-            end_url = link.find("span", class_="result__url__full")
-            question_link = domain_url.text + end_url.text
-            urls.append(question_link)
+            end_url = content.find("span", class_="result__url__full")
+            question_url = domain_url.text + end_url.text
+            urls.append(question_url)
 
     return urls
 
