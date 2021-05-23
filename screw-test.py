@@ -8,9 +8,6 @@ Example: ./screw-test.py question-paper.png
 import sys
 from pdfminer.high_level import extract_text
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 try:
     from PIL import Image
@@ -69,8 +66,7 @@ def get_ddg_url(question: str) -> str:
     return url
 
 
-# TODO: Make this work, don't support JUST physicsandmathstutor but also many
-# others.
+# TODO: Don't support JUST physicsandmathstutor but also many others.
 def find_question_urls(driver, question: str) -> str:
     """
     Return URL of major mark scheme websites.
@@ -78,18 +74,14 @@ def find_question_urls(driver, question: str) -> str:
     urls = []
     driver.get(get_ddg_url(question))
 
-    try:
-        # Get all website links
-        question_urls = WebDriverWait(driver, 10).until(
-                EC.presence_of_all_elements_located((By.CLASS_NAME, "result__url js-result-extras-url"))
-                )
-        for url in question_urls:
-            # Check if link contains the domain "pmt.physicsandmathstutor.com" and
-            # if it does, append the URL.
-            if "https://pmt.physicsandmathstutor.com" in url.get_attribute("href"):
-                urls.append(url)
-    except:
-        pass
+    # Get all website links
+    question_urls = driver.find_elements_by_xpath("//a[@href]")
+    for elem in question_urls:
+        # Check if link contains the domain "pmt.physicsandmathstutor.com" and
+        # if it does, append the URL.
+        url = elem.get_attribute("href")
+        if "https://pmt.physicsandmathstutor.com" in url:
+            urls.append(url)
 
     return urls
 
