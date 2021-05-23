@@ -98,11 +98,11 @@ else:
 print("Detecting questions...")
 questions = detect_questions(text)
 
+# Run browser headless
 options = Options()
 options.headless = True
 print("Searching questions...")
 driver = webdriver.Firefox(options=options)
-#  driver = webdriver.Firefox()
 
 # Test
 for ques in questions:
