@@ -1,2 +1,10 @@
 # screw-test
-Find mark schemes from question paper picture. I am making this for my friends.
+An easy cheating program I made for my **dumb** friends. Find mark schemes from
+given question paper picture. Cheat or study? I prefer *both*. Nerds be like -
+"bUt ChEaTiNg WoNt HeLp YoU iN o LeVels" "hOnEsTy Is ThE bEsT pOlIcY", no one
+cares lol.
+
+As a wise man once said:
+
+> Work smart not hard
+> - I don't know who
