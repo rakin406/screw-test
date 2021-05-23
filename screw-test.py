@@ -34,9 +34,8 @@ def detect_questions(paper: str) -> str:
     """
     questions = []
     for line in paper.splitlines():
-        line = line.strip()
-
         # If line is JUST number, then don't add it to questions.
+        line = line.strip()
         if not line.isdigit():
             # If first letter of the line is a number, it means it's a question.
             # For example, "1. What is physics?"
@@ -47,28 +46,34 @@ def detect_questions(paper: str) -> str:
 
 
 # TODO: Don't support JUST physicsandmathstutor but also many others.
-def find_question_url(question: str) -> str:
+def get_ddg_url(question: str) -> str:
     """
-    Return URL of major mark scheme websites.
+    Return DuckDuckGo URL for the search query of the question.
     """
-    urls = []
-
-    # Create duckduckgo-searchable URL. The reason I chose duckduckgo instead
-    # of google is because scraping google is harder(they do not show the full
-    # URL of the links).
-    search_url = "https://duckduckgo.com/?q=physicsandmathstutor+"
+    # The reason I chose duckduckgo instead of google is because scraping
+    # google is harder(they do not show the full URL of the links).
+    url = "https://duckduckgo.com/?q=physicsandmathstutor+"
 
     # Search query
     words = question.split()
     for word in words:
-        search_url += word
+        url += word
         if word == words[-1]:
             # I don't know if this is needed.
-            search_url += "&t=hc&va=u&ia=web"
+            url += "&t=hc&va=u&ia=web"
         else:
-            search_url += "+"
+            url += "+"
 
-    page = requests.get(search_url)
+    return url
+
+
+# TODO: Don't support JUST physicsandmathstutor but also many others.
+def find_question_urls(question: str) -> str:
+    """
+    Return URL of major mark scheme websites.
+    """
+    urls = []
+    page = requests.get(get_ddg_url(question))
     soup = BeautifulSoup(page.content, "lxml")
 
     # Get all website links
@@ -98,6 +103,6 @@ questions = detect_questions(text)
 
 # Test
 for ques in questions:
-    urls = find_question_url(ques)
+    urls = find_question_urls(ques)
     for url in urls:
         print(url)
