@@ -6,7 +6,7 @@ Example: ./screw-test.py question-paper.png
 """
 
 import sys
-from pdfminer.high_level import extract_text_to_fp, extract_text
+from pdfminer.high_level import extract_text
 
 try:
     from PIL import Image
