@@ -102,7 +102,8 @@ driver = webdriver.Firefox()
 
 # Test
 for ques in questions:
-    urls = find_question_urls(driver, ques)
+    # Links will be unique
+    urls = list(dict.fromkeys(find_question_urls(driver, ques)))
     for url in urls:
         print(url)
 
