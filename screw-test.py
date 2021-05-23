@@ -80,19 +80,16 @@ def find_question_url(question: str) -> str:
     return urls
 
 
+# Get text from image or pdf
 if QUESTION_PAPER.endswith(".pdf"):
-    pdf_text = extract_text(QUESTION_PAPER)
-    questions = detect_questions(pdf_text)
-
-    # Test
-    for ques in questions:
-        urls = find_question_url(ques)
-        for url in urls:
-            print(url)
+    text = extract_text(QUESTION_PAPER)
 else:
-    image_text = pytesseract.image_to_string(Image.open(QUESTION_PAPER))
-    questions = detect_questions(image_text)
-    for ques in questions:
-        urls = find_question_url(ques)
-        for url in urls:
-            print(url)
+    text = pytesseract.image_to_string(Image.open(QUESTION_PAPER))
+
+questions = detect_questions(text)
+
+# Test
+for ques in questions:
+    urls = find_question_url(ques)
+    for url in urls:
+        print(url)
