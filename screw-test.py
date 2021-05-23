@@ -82,10 +82,13 @@ def find_question_url(question: str) -> str:
 
 # Get text from image or pdf
 if QUESTION_PAPER.endswith(".pdf"):
+    print("Extracting text from PDF...")
     text = extract_text(QUESTION_PAPER)
 else:
+    print("Extracting text from image...")
     text = pytesseract.image_to_string(Image.open(QUESTION_PAPER))
 
+print("Detecting questions...")
 questions = detect_questions(text)
 
 # Test
