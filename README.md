@@ -8,3 +8,17 @@ As a wise man once said:
 
 > Work smart not hard
 > - I don't know who
+
+## Installation
+```shell
+git clone https://github.com/rakin406/screw-test.git
+cd screw-test
+pip3 install -r requirements.txt
+```
+
+## Usage
+```shell
+./screw-test.py <image/pdf>
+./screw-test.py question.jpg
+./screw-test.py question.pdf
+```
