@@ -115,8 +115,15 @@ else:
     print("Extracting text from image...")
     text = pytesseract.image_to_string(Image.open(QUESTION_PAPER))
 
+if not text:
+    print("No text found!")
+    sys.exit(2)
+
 print("Detecting questions...")
 questions = detect_questions(text)
+if not questions:
+    print("No questions found!")
+    sys.exit(3)
 
 # Run browser headless
 options = Options()
