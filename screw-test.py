@@ -54,18 +54,7 @@ def get_ddg_url(question: str) -> str:
     """
     # The reason I chose duckduckgo instead of google is because scraping
     # google is harder(they do not show the full URL of the links).
-    url = "https://duckduckgo.com/?q=physicsandmathstutor+"
-
-    # Search query
-    words = question.split()
-    for word in words:
-        url += word
-        if word == words[-1]:
-            # I don't know if this is needed.
-            url += "&t=hc&va=u&ia=web"
-        else:
-            url += "+"
-
+    url = "https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(question.replace(" ", "+"))
     return url
 
 
