@@ -126,16 +126,15 @@ if not questions:
     print("No questions found!")
     sys.exit(3)
 
-# Run browser headless
+# Install geckodriver and run headless browser
 options = Options()
 options.headless = True
-print("Searching questions...")
 driver = webdriver.Firefox(options=options, executable_path=GeckoDriverManager().install())
 
 line = 1
 answer_found = False
 print()
-print("Searching answers...")
+print("Searching...")
 
 for ques in questions:
     # Links will be unique
