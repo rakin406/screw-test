@@ -1,0 +1,9 @@
+# These libraries are needed to make the program work.
+# Run this in terminal:
+# pip3 install -r requirements.txt
+
+requests==2.25.1
+pdfminer==20191125
+selenium==3.141.0
+Pillow==8.2.0
+pytesseract==0.3.7
