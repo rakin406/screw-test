@@ -6,6 +6,7 @@ Example: ./screw-test.py question-paper.png
 """
 
 import sys
+import requests
 from pdfminer.high_level import extract_text
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -70,7 +71,7 @@ def get_ddg_url(question: str) -> str:
 # TODO: Don't support JUST physicsandmathstutor but also many others.
 def find_question_urls(driver, question: str) -> str:
     """
-    Return URL of major mark scheme websites.
+    Return URL of major question websites.
     """
     urls = []
     driver.get(get_ddg_url(question))
@@ -85,6 +86,25 @@ def find_question_urls(driver, question: str) -> str:
             urls.append(url)
 
     return urls
+
+
+# TODO: Don't support JUST physicsandmathstutor but also many others.
+def find_answer(question_url: str) -> str:
+    """
+    Return answer link.
+    """
+    if "https://pmt.physicsandmathstutor.com" in question_url and question_url.endswith("QP.pdf"):
+        # This is how physicsandmathstutor organizes URL. The question paper
+        # has "QP.pdf" at the end and the mark scheme paper has "MS.pdf" at the
+        # end. The other parts of both URLs are the same.
+        answer_url = question_url.replace("QP.pdf", "MS.pdf")
+
+        # Check if URL exists
+        site = requests.get(answer_url)
+        if site.status_code == 200:
+            return answer_url
+
+    return None
 
 
 # Get text from image or pdf
@@ -104,11 +124,17 @@ options.headless = True
 print("Searching questions...")
 driver = webdriver.Firefox(options=options)
 
-# Test
+print("Searching answers...")
+line = 1
 for ques in questions:
     # Links will be unique
     urls = list(dict.fromkeys(find_question_urls(driver, ques)))
     for url in urls:
-        print(url)
+        print()
+        print("{}. Question: {}".format(line, url))
+        answer = find_answer(url)
+        if answer is not None:
+            print("Answer: {}".format(answer))
+        line += 1
 
 driver.quit()
