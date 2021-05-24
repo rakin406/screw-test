@@ -47,54 +47,64 @@ def detect_questions(paper: str) -> str:
     return questions
 
 
-# TODO: Don't support JUST physicsandmathstutor but also many others.
-def get_ddg_url(question: str) -> str:
+def get_ddg_urls(question: str) -> str:
     """
-    Return DuckDuckGo URL for the search query of the question.
+    Return DuckDuckGo URLs for the search query of the question.
+    Supports physicsandmathstutor and papacambridge.
     """
     # The reason I chose duckduckgo instead of google is because scraping
     # google is harder(they do not show the full URL of the links).
-    url = "https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(question.replace(" ", "+"))
-    return url
+    urls = []
+    query_ques = question.replace(" ", "+")
+    urls.append("https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(query_ques))
+    urls.append("https://duckduckgo.com/?q=papacambridge+{}&t=hc&va=u&ia=web".format(query_ques))
+    return urls
 
 
-# TODO: Don't support JUST physicsandmathstutor but also many others.
 def find_question_urls(driver, question: str) -> str:
     """
     Return URL of major question websites.
     """
     urls = []
-    driver.get(get_ddg_url(question))
+    query_urls = get_ddg_urls(question)
 
-    # Get all website links
-    question_urls = driver.find_elements_by_xpath("//a[@href]")
-    for elem in question_urls:
-        # Check if link contains the domain "pmt.physicsandmathstutor.com" and
-        # if it does, append the URL.
-        url = elem.get_attribute("href")
-        if "https://pmt.physicsandmathstutor.com" in url:
-            urls.append(url)
+    for query in query_urls:
+        driver.get(query)
+
+        # Get all website links
+        question_urls = driver.find_elements_by_xpath("//a[@href]")
+        for elem in question_urls:
+            # Check if link contains the question website domains and if it does,
+            # append the URL.
+            url = elem.get_attribute("href")
+            if "https://pmt.physicsandmathstutor.com" in url or "https://pastpapers.papacambridge.com" in url:
+                urls.append(url)
 
     return urls
 
 
-# TODO: Don't support JUST physicsandmathstutor but also many others.
 def find_answer(question_url: str) -> str:
     """
     Return answer link.
     """
+    answer_url = None
+
+    # Prepare mark scheme links
     if "https://pmt.physicsandmathstutor.com" in question_url and question_url.endswith("QP.pdf"):
         # This is how physicsandmathstutor organizes URL. The question paper
         # has "QP.pdf" at the end and the mark scheme paper has "MS.pdf" at the
         # end. The other parts of both URLs are the same.
         answer_url = question_url.replace("QP.pdf", "MS.pdf")
+    elif "https://pastpapers.papacambridge.com" in question_url and question_url.endswith(".pdf"):
+        answer_url = question_url.replace("_qp_", "_ms_")
 
-        # Check if URL exists
+    # Check if URL exists
+    if answer_url is not None:
         site = requests.get(answer_url)
         if site.status_code == 200:
             return answer_url
 
-    return None
+    return answer_url
 
 
 # Get text from image or pdf
