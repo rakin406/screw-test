@@ -10,6 +10,7 @@ import requests
 from pdfminer.high_level import extract_text
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
 
 try:
     from PIL import Image
@@ -129,10 +130,11 @@ if not questions:
 options = Options()
 options.headless = True
 print("Searching questions...")
-driver = webdriver.Firefox(options=options)
+driver = webdriver.Firefox(options=options, executable_path=GeckoDriverManager().install())
 
 line = 1
 answer_found = False
+print()
 print("Searching answers...")
 
 for ques in questions:
