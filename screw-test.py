@@ -124,8 +124,10 @@ options.headless = True
 print("Searching questions...")
 driver = webdriver.Firefox(options=options)
 
-print("Searching answers...")
 line = 1
+answer_found = False
+print("Searching answers...")
+
 for ques in questions:
     # Links will be unique
     urls = list(dict.fromkeys(find_question_urls(driver, ques)))
@@ -134,7 +136,13 @@ for ques in questions:
         print("{}. Question: {}".format(line, url))
         answer = find_answer(url)
         if answer is not None:
+            if answer_found is False:
+                answer_found = True
             print("Answer: {}".format(answer))
         line += 1
+
+if answer_found is False:
+    print()
+    print("No answers found lol. RIP")
 
 driver.quit()
