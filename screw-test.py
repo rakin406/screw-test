@@ -50,16 +50,24 @@ def detect_questions(paper: str) -> str:
 def get_ddg_urls(question: str) -> str:
     """
     Return DuckDuckGo URLs for the search query of the question.
-    Supports physicsandmathstutor and papacambridge.
+    Supports papacambridge, physicsandmathstutor and xtremepapers.
     """
     # The reason I chose duckduckgo instead of google is because scraping
     # google is harder(they do not show the full URL of the links).
     urls = []
     query_ques = question.replace(" ", "+")
 
-    urls.append("https://duckduckgo.com/?q=papacambridge+{}&t=hc&va=u&ia=web".format(query_ques))
-    urls.append("https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(query_ques))
-    urls.append("https://duckduckgo.com/?q=xtremepapers+{}&t=hc&va=u&ia=web".format(query_ques))
+    urls.append(
+        "https://duckduckgo.com/?q=papacambridge+{}&t=hc&va=u&ia=web".format(query_ques)
+    )
+    urls.append(
+        "https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(
+            query_ques
+        )
+    )
+    urls.append(
+        "https://duckduckgo.com/?q=xtremepapers+{}&t=hc&va=u&ia=web".format(query_ques)
+    )
 
     return urls
 
@@ -80,7 +88,11 @@ def find_question_urls(driver, question: str) -> str:
             # Check if link contains the question website domains and if it does,
             # append the URL.
             url = elem.get_attribute("href")
-            if "https://pmt.physicsandmathstutor.com" in url or "https://pastpapers.papacambridge.com" in url or "https://papers.xtremepape.rs" in url:
+            if (
+                "https://pmt.physicsandmathstutor.com" in url
+                or "https://pastpapers.papacambridge.com" in url
+                or "https://papers.xtremepape.rs" in url
+            ):
                 if url.endswith(".pdf"):
                     urls.append(url)
 
@@ -132,7 +144,9 @@ if not questions:
 # Install geckodriver and run headless browser
 options = Options()
 options.headless = True
-driver = webdriver.Firefox(options=options, executable_path=GeckoDriverManager().install())
+driver = webdriver.Firefox(
+    options=options, executable_path=GeckoDriverManager().install()
+)
 
 line = 1
 answer_found = False
