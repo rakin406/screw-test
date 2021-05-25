@@ -6,6 +6,7 @@ Example: ./screw-test.py question-paper.png
 """
 
 import sys
+import webbrowser
 import requests
 from pdfminer.high_level import extract_text
 from selenium import webdriver
@@ -139,6 +140,7 @@ options.headless = True
 driver = webdriver.Firefox(options=options)
 
 line = 1
+browser_tabs = 0
 answer_found = False
 print("Searching...")
 
@@ -146,13 +148,20 @@ for ques in questions:
     # Links will be unique
     urls = list(dict.fromkeys(find_question_urls(driver, ques)))
     for url in urls:
-        print()
-        print("{}. Question: {}".format(line, url))
         answer = find_answer(url)
         if answer is not None:
+            print()
+            print("{}. Question: {}".format(line, url))
+            print("Answer: {}".format(answer))
+
+            # Open question paper in browser
+            if browser_tabs < 5:
+                webbrowser.open(url)
+                browser_tabs += 1
+
             if answer_found is False:
                 answer_found = True
-            print("Answer: {}".format(answer))
+
         line += 1
 
 if answer_found is False:
