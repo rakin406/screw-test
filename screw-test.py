@@ -140,19 +140,20 @@ browser_tabs = 0
 answer_found = False
 print("Searching...")
 
-for ques in questions:
+for i in questions:
     # Links will be unique
-    urls = list(dict.fromkeys(find_question_urls(driver, ques)))
-    for url in urls:
-        answer = find_answer(url)
+    urls = list(dict.fromkeys(find_question_urls(driver, i)))
+    for question in urls:
+        answer = find_answer(question)
         if answer is not None:
             print()
-            print("{}. Question: {}".format(line, url))
+            print("{}. Question: {}".format(line, question))
             print("Answer: {}".format(answer))
 
-            # Open question paper in browser
+            # Open papers in browser
             if browser_tabs < 5:
-                webbrowser.open(url)
+                webbrowser.open(question)
+                webbrowser.open(answer)
                 browser_tabs += 1
 
             if answer_found is False:
