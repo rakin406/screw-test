@@ -33,9 +33,8 @@ def detect_questions(paper: str) -> str:
     for line in paper.splitlines():
         # If line is JUST number, then don't add it to questions.
         line = line.strip()
-        if not line.isdigit():
-            if len(line) > 0:
-                questions.append(line)
+        if not line.isdigit() and len(line) > 0:
+            questions.append(line)
     return questions
 
 
