@@ -52,23 +52,16 @@ def get_ddg_urls(question: str) -> str:
     Return DuckDuckGo URLs for the search query of the question.
     Supports papacambridge, physicsandmathstutor and xtremepapers.
     """
-    # The reason I chose duckduckgo instead of google is because scraping
-    # google is harder(they do not show the full URL of the links).
-    urls = []
     query_ques = question.replace(" ", "+")
-
-    urls.append(
-        "https://duckduckgo.com/?q=papacambridge+{}&t=hc&va=u&ia=web".format(query_ques)
-    )
-    urls.append(
+    urls = [
+        "https://duckduckgo.com/?q=papacambridge+{}&t=hc&va=u&ia=web".format(
+            query_ques
+        ),
         "https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(
             query_ques
-        )
-    )
-    urls.append(
-        "https://duckduckgo.com/?q=xtremepapers+{}&t=hc&va=u&ia=web".format(query_ques)
-    )
-
+        ),
+        "https://duckduckgo.com/?q=xtremepapers+{}&t=hc&va=u&ia=web".format(query_ques),
+    ]
     return urls
 
 
