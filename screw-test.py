@@ -56,8 +56,11 @@ def get_ddg_urls(question: str) -> str:
     # google is harder(they do not show the full URL of the links).
     urls = []
     query_ques = question.replace(" ", "+")
-    urls.append("https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(query_ques))
+
     urls.append("https://duckduckgo.com/?q=papacambridge+{}&t=hc&va=u&ia=web".format(query_ques))
+    urls.append("https://duckduckgo.com/?q=physicsandmathstutor+{}&t=hc&va=u&ia=web".format(query_ques))
+    urls.append("https://duckduckgo.com/?q=xtremepapers+{}&t=hc&va=u&ia=web".format(query_ques))
+
     return urls
 
 
@@ -77,8 +80,9 @@ def find_question_urls(driver, question: str) -> str:
             # Check if link contains the question website domains and if it does,
             # append the URL.
             url = elem.get_attribute("href")
-            if "https://pmt.physicsandmathstutor.com" in url or "https://pastpapers.papacambridge.com" in url:
-                urls.append(url)
+            if "https://pmt.physicsandmathstutor.com" in url or "https://pastpapers.papacambridge.com" in url or "https://papers.xtremepape.rs" in url:
+                if url.endswith(".pdf"):
+                    urls.append(url)
 
     return urls
 
@@ -90,12 +94,12 @@ def find_answer(question_url: str) -> str:
     answer_url = None
 
     # Prepare mark scheme links
-    if "https://pmt.physicsandmathstutor.com" in question_url and question_url.endswith("QP.pdf"):
+    if "https://pmt.physicsandmathstutor.com" in question_url:
         # This is how physicsandmathstutor organizes URL. The question paper
         # has "QP.pdf" at the end and the mark scheme paper has "MS.pdf" at the
         # end. The other parts of both URLs are the same.
         answer_url = question_url.replace("QP.pdf", "MS.pdf")
-    elif "https://pastpapers.papacambridge.com" in question_url and question_url.endswith(".pdf"):
+    else:
         answer_url = question_url.replace("_qp_", "_ms_")
 
     # Check if URL exists
