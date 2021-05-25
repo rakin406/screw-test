@@ -2,7 +2,10 @@
 """
 Ultra cheating program I made for my dumb friends.
 Usage: ./screw-test.py <image/pdf>
-Example: ./screw-test.py question-paper.png
+
+Examples:
+./screw-test.py question.jpg
+./screw-test.py paper1.png paper2.pdf
 """
 
 import sys
@@ -12,14 +15,6 @@ import pytesseract
 from pdfminer.high_level import extract_text
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-
-# Get image or pdf path
-if len(sys.argv) > 1:
-    QUESTION_PAPER = sys.argv[1]
-else:
-    print("Usage: ./screw-test.py <image/pdf>")
-    print("Example: ./screw-test.py question-paper.png")
-    sys.exit(1)
 
 
 # NOTE: This function is not perfect, it returns some non-questions too. It's
@@ -108,50 +103,62 @@ def find_answer(question_url: str) -> str:
     return answer_url
 
 
-# Get text from image or pdf
-if QUESTION_PAPER.endswith(".pdf"):
-    print("Extracting text from PDF...")
-    text = extract_text(QUESTION_PAPER)
-else:
-    print("Extracting text from image...")
-    text = pytesseract.image_to_string(Image.open(QUESTION_PAPER))
+def search_and_print(driver, questions):
+    line = 1
+    answer_found = False
 
-if not text:
-    print("No text found!")
-    sys.exit(2)
+    for i in questions:
+        # Links will be unique
+        urls = list(dict.fromkeys(find_question_urls(driver, i)))
+        for question in urls:
+            answer = find_answer(question)
+            if answer is not None:
+                print()
+                print("{}. Question: {}".format(line, question))
+                print("Answer: {}".format(answer))
 
-print("Detecting questions...")
-questions = detect_questions(text)
-if not questions:
-    print("No questions found!")
-    sys.exit(3)
+                if answer_found is False:
+                    answer_found = True
+
+            line += 1
+
+    if answer_found is False:
+        print()
+        print("No answers found lol. RIP")
+
+
+ARGS = len(sys.argv) - 1
+if ARGS == 0:
+    print("Usage: ./screw-test.py <image/pdf>")
+    print("$ ./screw-test.py question.jpg")
+    print("$ ./screw-test.py paper1.png paper2.pdf")
+    sys.exit(1)
 
 # Run headless browser
 options = Options()
 options.headless = True
 driver = webdriver.Firefox(options=options)
 
-line = 1
-answer_found = False
-print("Searching...")
-
-for i in questions:
-    # Links will be unique
-    urls = list(dict.fromkeys(find_question_urls(driver, i)))
-    for question in urls:
-        answer = find_answer(question)
-        if answer is not None:
-            print()
-            print("{}. Question: {}".format(line, question))
-            print("Answer: {}".format(answer))
-
-            if answer_found is False:
-                answer_found = True
-
-        line += 1
-
-if answer_found is False:
+for input in range(1, ARGS + 1):
+    # Get text from image or pdf
     print()
-    print("No answers found lol. RIP")
+    question_paper = sys.argv[input]
+    if question_paper.endswith(".pdf"):
+        print("Extracting text from PDF...")
+        text = extract_text(question_paper)
+    else:
+        print("Extracting text from image...")
+        text = pytesseract.image_to_string(Image.open(question_paper))
+
+    if not text:
+        continue
+
+    print("Detecting questions...")
+    questions = detect_questions(text)
+    if not questions:
+        continue
+
+    print("Searching...")
+    search_and_print(driver, questions)
 
 driver.quit()

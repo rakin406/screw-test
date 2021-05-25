@@ -20,5 +20,5 @@ pip3 install -r requirements.txt
 ```shell
 ./screw-test.py <image/pdf>
 ./screw-test.py question.jpg
-./screw-test.py question.pdf
+./screw-test.py paper1.png paper2.pdf
 ```
