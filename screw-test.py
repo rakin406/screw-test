@@ -8,15 +8,11 @@ Example: ./screw-test.py question-paper.png
 import sys
 import webbrowser
 import requests
+from PIL import Image
+import pytesseract
 from pdfminer.high_level import extract_text
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-
-try:
-    from PIL import Image
-except ImportError:
-    import Image
-import pytesseract
 
 # Get image or pdf path
 if len(sys.argv) > 1:
