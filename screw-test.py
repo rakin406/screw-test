@@ -6,7 +6,6 @@ Example: ./screw-test.py question-paper.png
 """
 
 import sys
-import webbrowser
 import requests
 from PIL import Image
 import pytesseract
@@ -35,10 +34,7 @@ def detect_questions(paper: str) -> str:
         # If line is JUST number, then don't add it to questions.
         line = line.strip()
         if not line.isdigit():
-            # If first letter of the line is a number, it means it's a question.
-            # For example, "1. What is physics?"
-            # How am I so sure that it's a question? Because of experience.
-            if len(line) > 0 and line[0].isdigit():
+            if len(line) > 0:
                 questions.append(line)
     return questions
 
@@ -82,8 +78,9 @@ def find_question_urls(driver, question: str) -> str:
                 or "https://pastpapers.papacambridge.com" in url
                 or "https://papers.xtremepape.rs" in url
             ):
-                if url.endswith(".pdf"):
-                    urls.append(url)
+                if "QP" in url or "_qp_" in url:
+                    if url.endswith(".pdf"):
+                        urls.append(url)
 
     return urls
 
@@ -136,7 +133,6 @@ options.headless = True
 driver = webdriver.Firefox(options=options)
 
 line = 1
-browser_tabs = 0
 answer_found = False
 print("Searching...")
 
@@ -149,12 +145,6 @@ for i in questions:
             print()
             print("{}. Question: {}".format(line, question))
             print("Answer: {}".format(answer))
-
-            # Open papers in browser
-            if browser_tabs < 5:
-                webbrowser.open(question)
-                webbrowser.open(answer)
-                browser_tabs += 1
 
             if answer_found is False:
                 answer_found = True
