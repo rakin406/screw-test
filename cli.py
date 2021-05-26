@@ -42,9 +42,9 @@ def search_and_print(driver, questions):
 
 ARGS = len(sys.argv) - 1
 if ARGS == 0:
-    print("Usage: ./screw-test.py <image/pdf>")
-    print("$ ./screw-test.py question.jpg")
-    print("$ ./screw-test.py paper1.png paper2.pdf")
+    print("Usage: ./cli.py <image/pdf>")
+    print("$ ./cli.py question.jpg")
+    print("$ ./cli.py paper1.png paper2.pdf")
     sys.exit(1)
 
 # Run headless browser

@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 
 ## Usage
 ```shell
-./screw-test.py <image/pdf>
-./screw-test.py question.jpg
-./screw-test.py paper1.png paper2.pdf
+./cli.py <image/pdf>
+./cli.py question.jpg
+./cli.py paper1.png paper2.pdf
 ```
