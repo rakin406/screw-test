@@ -72,8 +72,12 @@ def get_message(driver) -> str:
     """
     Get the person's last message.
     """
-    message = driver.find_elements_by_tag_name("span")[-2].text
-    return message
+    try:
+        message = driver.find_elements_by_tag_name("span")[-1].text
+        return message
+    except:
+        pass
+    return None
 
 
 ARGS = len(sys.argv) - 1
@@ -88,6 +92,11 @@ driver.get("https://www.instagram.com/direct/inbox/")
 find_person(driver, sys.argv[1])
 text_person(
     driver,
-    'Hello there. This program is written by Rakin. You can start using me by saying "start".',
+    'Hello {}. This program is written by Rakin. You can start using me by saying "start".'.format(
+        sys.argv[1]
+    ),
 )
-print(get_message(driver))
+
+while True:
+    if get_message(driver) == "start":
+        text_person(driver, "Hello {} :)".format(sys.argv[1]))
