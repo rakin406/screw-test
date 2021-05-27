@@ -3,7 +3,7 @@ import requests
 
 def detect_questions(paper: str) -> str:
     """
-    Return all the detected questions from the paper
+    Return all the detected questions from the paper.
     """
 
     # NOTE: This function is not perfect, it returns some non-questions too. It's
