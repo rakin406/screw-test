@@ -16,7 +16,7 @@ from selenium.webdriver.firefox.options import Options
 import screw_test
 
 
-def search_and_print(driver, questions):
+def search_and_print(driver, questions: str):
     line = 1
     answer_found = False
 
