@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 This program will send mark schemes automatically to your friends.
+Usage: ./bot.py <instagram>
 """
 
 import sys
@@ -21,7 +22,7 @@ def rchop(s, suffix) -> str:
     return s
 
 
-def get_profile() -> str:
+def get_profile_path() -> str:
     """
     Get current Firefox profile path.
     """
@@ -37,6 +38,11 @@ def get_profile() -> str:
     return profile
 
 
-#  print(get_profile())
-fp = webdriver.FirefoxProfile(get_profile())
-driver = webdriver.Firefox(fp)
+ARGS = len(sys.argv) - 1
+if ARGS == 0:
+    print("Usage: ./bot.py <instagram>")
+    sys.exit(1)
+
+profile = webdriver.FirefoxProfile(get_profile_path())
+driver = webdriver.Firefox(profile)
+driver.get("https://www.instagram.com/direct/inbox/")
