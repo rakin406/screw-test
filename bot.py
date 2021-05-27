@@ -44,12 +44,10 @@ def get_profile_path() -> str:
 
 def text_person(text: str):
     """
-    Text the person on instagram
+    Text the person on instagram.
     """
     input_area = driver.find_element_by_tag_name("textarea")
-    input_area.send_keys(
-        'Hello there. This program is written by Rakin. You can start using me by saying "start".'
-    )
+    input_area.send_keys(text)
     input_area.send_keys(Keys.RETURN)
 
 
@@ -70,14 +68,10 @@ try:
         )
     )
 except:
-    print("Usage: ./bot.py <instagram>")
+    print("Your internet connection is too slow.")
     sys.exit(2)
 
 username.click()
-
-# Text the person
-input_area = driver.find_element_by_tag_name("textarea")
-input_area.send_keys(
+text_person(
     'Hello there. This program is written by Rakin. You can start using me by saying "start".'
 )
-input_area.send_keys(Keys.RETURN)
