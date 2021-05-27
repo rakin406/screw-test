@@ -8,7 +8,7 @@ from selenium.webdriver.firefox.options import Options
 import screw_test
 
 
-def rchop(s, suffix):
+def rchop(s, suffix) -> str:
     """
     Remove last occurence of the substring.
     """
