@@ -42,13 +42,41 @@ def get_profile_path() -> str:
     return profile
 
 
-def text_person(text: str):
+def find_person(driver, username: str):
+    """
+    Find and click the person.
+    """
+    try:
+        person = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[contains(text(), '{}')]".format(sys.argv[1]))
+            )
+        )
+    except:
+        print("Your internet connection is too slow.")
+        sys.exit(1)
+
+    person.click()
+
+
+def text_person(driver, text: str):
     """
     Text the person on instagram.
     """
     input_area = driver.find_element_by_tag_name("textarea")
     input_area.send_keys(text)
     input_area.send_keys(Keys.RETURN)
+
+
+def get_message(driver) -> str:
+    """
+    Get the person's last message.
+    """
+    # TODO: Find out a way to get last message.
+    message = driver.find_element_by_xpath(
+        "/html/body/div[1]/section/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div/div/div[-1]/div[2]/div[2]/div/div[1]/div/div/div/div/div/span"
+    )
+    return message.text
 
 
 ARGS = len(sys.argv) - 1
@@ -59,19 +87,10 @@ if ARGS == 0:
 profile = webdriver.FirefoxProfile(get_profile_path())
 driver = webdriver.Firefox(profile)
 
-# Find the person
 driver.get("https://www.instagram.com/direct/inbox/")
-try:
-    username = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//*[contains(text(), '{}')]".format(sys.argv[1]))
-        )
-    )
-except:
-    print("Your internet connection is too slow.")
-    sys.exit(2)
-
-username.click()
+find_person(driver, sys.argv[1])
 text_person(
-    'Hello there. This program is written by Rakin. You can start using me by saying "start".'
+    driver,
+    'Hello there. This program is written by Rakin. You can start using me by saying "start".',
 )
+print(get_message(driver))
