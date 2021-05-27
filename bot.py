@@ -10,6 +10,7 @@ import pytesseract
 from pdfminer.high_level import extract_text
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.keys import Keys
 import screw_test
 
 
@@ -46,3 +47,5 @@ if ARGS == 0:
 profile = webdriver.FirefoxProfile(get_profile_path())
 driver = webdriver.Firefox(profile)
 driver.get("https://www.instagram.com/direct/inbox/")
+username = driver.find_element_by_xpath("//*[contains(text(), '{}')]".format(sys.argv[1]))
+username.click()
