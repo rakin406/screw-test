@@ -72,11 +72,8 @@ def get_message(driver) -> str:
     """
     Get the person's last message.
     """
-    # TODO: Find out a way to get last message.
-    message = driver.find_element_by_xpath(
-        "/html/body/div[1]/section/div/div[2]/div/div/div[2]/div[2]/div/div[1]/div/div/div[-1]/div[2]/div[2]/div/div[1]/div/div/div/div/div/span"
-    )
-    return message.text
+    message = driver.find_elements_by_tag_name("span")[-2].text
+    return message
 
 
 ARGS = len(sys.argv) - 1
