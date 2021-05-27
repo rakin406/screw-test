@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This program will send mark schemes automatically to your friends.
+"""
+
 import sys
 from PIL import Image
 import pytesseract
